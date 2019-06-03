@@ -2,7 +2,10 @@
 const btn = document.querySelector(".btn");
 
 btn.addEventListener("click", function (){
-    ajax.then(data => showData(data)).catch(error => console.log(error));
+       fetch("https://randomuser.me/api/")
+           .then(data => data.json())
+           .then(data => showData(data))
+           .catch(error => console.log(error));
 });
     const ajax = new Promise((resolve, reject)=>{
     const xhr = new XMLHttpRequest();
@@ -14,28 +17,33 @@ btn.addEventListener("click", function (){
         if(xhr.status === 200){
             resolve(xhr.responseText);
         }else{
-            reject(Error(xhr.statusText))
+            reject(Error(xhr.statusText));
         }
     };
     xhr.onerror = () =>{
-        reject(Error("there was an error"))
+        reject(Error("there was an error"));
     };
-
     xhr.send();
 });
 
 function showData(data){
-    const response = JSON.parse(data);
-    console.log(response);
-
     const{
         name:{first},
         dob: {age}
-    } = response.results[0];
+    } = data.results[0];
 
     document.getElementById("name").textContent = first;
     document.getElementById("age").textContent = age;
 }
+
+/*
+console.log(fetch("https://randomuser.me/api/"));
+fetch("https://randomuser.me/api/")
+    .then(data => data.json())
+    .then(data => console.log(data))
+    .catch(error => console.log(error));
+    */
+
 /*
 function externalData(url){
     // new Promise Object, pass the callback function,
